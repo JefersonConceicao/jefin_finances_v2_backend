@@ -4,6 +4,8 @@
     </div>
 
     <div>
-        <a href> Clique aqui para recuperar sua senha </a>
+        <a href="{{ config('app.url') }}/setNewPassword?token={{$recovery_password}}">
+            Clique aqui para recuperar sua senha
+        </a>
     </div>
 </html>

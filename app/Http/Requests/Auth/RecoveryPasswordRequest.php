@@ -3,12 +3,10 @@
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Route;
 
 class RecoveryPasswordRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
@@ -21,15 +19,28 @@ class RecoveryPasswordRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'email' => 'required|email'
-        ];
+        $currentRoute = explode('.', Route::currentRouteName());
+        switch(end($currentRoute)){
+            case 'passwordResetLink':
+                return [
+                    'email' => 'required|email'
+                ];
+            case 'setNewPassword':
+                return[
+                    'token' => 'required',
+                    'password' => 'required',
+                    'confirm_password' => 'required|same:password'
+                ];
+
+        }
+
     }
 
     public function messages(): array
     {
         return [
-            'required' => 'Campo obrigatório'
+            'required' => 'Campo obrigatório',
+            'same' => 'Confirmação da senha deve ser igual a senha informada'
         ];
     }
 }

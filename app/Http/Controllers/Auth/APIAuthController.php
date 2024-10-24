@@ -25,8 +25,13 @@ class APIAuthController extends Controller
         $generateTokenSanctum = $user->createToken(
             'auth_token',
             ['*'],
-            now()->addMinutes(5)
+            now()->addWeek()
         );
+
+        if(!empty($generateTokenSanctum)){
+            $user->last_login = now()->toDateTimeString();
+            $user->save();
+        }
 
         return response()->json([
             'error' => false,

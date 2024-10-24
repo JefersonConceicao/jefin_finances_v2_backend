@@ -4,35 +4,34 @@ namespace App\Mail;
 
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class RecoveryPassword extends Mailable
+class SendMailRegisterUser extends Mailable
 {
     use Queueable, SerializesModels;
 
     public function __construct(
         protected User $user
-    ){}
+    )
+    {}
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Recuperação de Senha',
+            subject: 'CONFIRME SEU CADASTRO',
         );
     }
 
     public function content(): Content
     {
         return new Content(
-            view: 'recoveryPasswordMail',
+            view: 'confirmRegisterMail',
             with: [
                 'name' => $this->user->name,
-                'recovery_password' => $this->user->password_token_reset
+                'confirmation_link' => route('auth.registerConfirmation',$this->user->mail_token_confirm)
             ]
         );
     }

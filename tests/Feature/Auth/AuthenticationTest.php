@@ -1,35 +1,54 @@
 <?php
-
 use App\Models\User;
 
-test('users can authenticate using the login screen', function () {
-    $user = User::factory()->create();
+test('autenticacao do usuário deve retornar status 200 e flg error false', function(){
+    $usuario = User::factory()->create();
 
-    $response = $this->post('/login', [
-        'email' => $user->email,
+    $response = $this->postJson('/api/login', [
+        'email' => $usuario->email,
         'password' => 'password',
     ]);
 
-    $this->assertAuthenticated();
-    $response->assertNoContent();
+    $response->assertStatus(200)->assertJson([
+        'error' => false
+    ]);
 });
 
-test('users can not authenticate with invalid password', function () {
-    $user = User::factory()->create();
+test('não é permitido cadastrar um usuário com e-mail já cadastrado', function(){
 
-    $this->post('/login', [
-        'email' => $user->email,
-        'password' => 'wrong-password',
+    $usuario = User::factory()->create();
+    $emailUsuarioJaExistente = $usuario->email;
+
+    $response = $this->postJson('/api/register', [
+        'name' => 'Jeferson',
+        'last_name' => 'Oliveira',
+        'email' => $emailUsuarioJaExistente,
+        'password' => 'password',
+        'password_confirmation' => 'password',
     ]);
 
-    $this->assertGuest();
+    $response->assertStatus(422)
+        ->assertJsonValidationErrors(['email'])
+        ->assertJson([
+            'errors' => [
+                'email' => ['Email já existente na base de dados']
+            ]
+        ]);
+
+    $this->assertEquals(1, User::where('email', $emailUsuarioJaExistente)->count());
 });
 
-test('users can logout', function () {
-    $user = User::factory()->create();
+test('confirmação de senha deve ser igual a senha cadastrada', function(){
 
-    $response = $this->actingAs($user)->post('/logout');
+    $response = $this->postJson('/api/register', [
+        'name' => 'Jeferson',
+        'last_name' => 'Oliveira',
+        'email' => 'testing@example.com',
+        'password' => 'password',
+        'password_confirmation' => 'password_teste',
+    ]);
 
-    $this->assertGuest();
-    $response->assertNoContent();
+    $response
+        ->assertStatus(422)
+        ->assertJsonValidationErrors(['password_confirmation']);
 });
