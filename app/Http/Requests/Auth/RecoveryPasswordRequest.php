@@ -40,6 +40,7 @@ class RecoveryPasswordRequest extends FormRequest
     {
         return [
             'required' => 'Campo obrigatório',
+            'email' => 'O campo deve ser um e-mail válido',
             'same' => 'Confirmação da senha deve ser igual a senha informada'
         ];
     }

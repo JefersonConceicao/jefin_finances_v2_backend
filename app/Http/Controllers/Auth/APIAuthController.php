@@ -43,7 +43,10 @@ class APIAuthController extends Controller
 
     public function logout()
     {
-        Auth::user()->tokens()->delete();
+        Auth::user()
+            ->tokens()
+            ->delete();
+
         return response()->json([
             'error' => false,
         ], 200);

@@ -25,10 +25,9 @@ class PasswordResetLinkController extends Controller
             ->first();
 
         if (empty($user)) {
-            return response()->json([
-                'valid' => false,
-                'msg' => 'E-mail não existe na nossa base dados'
-            ], 404);
+            throw ValidationException::withMessages([
+                'email' => 'E-mail não encontrado'
+            ]);
         }
 
         $user->password_token_reset = Str::random(60);
