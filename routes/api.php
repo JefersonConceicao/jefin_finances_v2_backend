@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\APIAuthController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\DashboardController;
 
 Route::POST('/login', [APIAuthController::class, 'authenticate'])->name('auth.authenticate');
 Route::POST('/recoveryPassword', [PasswordResetLinkController::class, 'store'])->name('auth.passwordResetLink');
@@ -16,5 +17,6 @@ Route::middleware(['auth:sanctum'])->group(function(){
         return $request->user();
     });
 
+    Route::GET('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::POST('/logout', [APIAuthController::class, 'logout'])->name('auth.logout');
 });
