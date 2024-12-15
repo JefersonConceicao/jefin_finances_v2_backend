@@ -14,7 +14,14 @@ class DashboardController extends Controller
 
     public function index(Request $request)
     {
-        $response = $this->despesa->getDespesasPorAnoMes($request->user_id);
-        return response()->json($response, 200);
+        $quantidadeMesesAnterior = 5;
+        $data = $this->despesa->getDespesasPorAnoMes($request->user_id, $quantidadeMesesAnterior);
+        $response = [
+            'dados' => $data,
+            'quantidade_meses' => $quantidadeMesesAnterior,
+            'total' => $totalDespesas = $data->sum('total_despesas')
+        ];
+
+        return response()->json(data: $response, status:200);
     }
 }
