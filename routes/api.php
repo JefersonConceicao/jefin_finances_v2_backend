@@ -11,6 +11,7 @@ use App\Http\Controllers\UsersController;
 Route::ANY('/login', [APIAuthController::class, 'authenticate'])->name('auth.authenticate');
 Route::POST('/recoveryPassword', [PasswordResetLinkController::class, 'store'])->name('auth.passwordResetLink');
 Route::POST('/setNewPassword', [PasswordResetLinkController::class, 'setNewPassword'])->name('auth.setNewPassword');
+
 Route::POST('/register',[RegisteredUserController::class, 'store'])->name('auth.register');
 
 Route::middleware(['auth:sanctum'])->group(function(){
