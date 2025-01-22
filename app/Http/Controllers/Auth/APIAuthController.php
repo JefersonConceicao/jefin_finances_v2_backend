@@ -16,7 +16,7 @@ class APIAuthController extends Controller
         $credentials = (object)$request->validated();
         $user = User::where('email', $credentials->email)->first();
 
-        if(!$user || !Hash::check($credentials->password, $user->password)){
+        if (!$user || !Hash::check($credentials->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => 'Credenciais incorretas'
             ]);
@@ -28,7 +28,7 @@ class APIAuthController extends Controller
             now()->addWeek()
         );
 
-        if(!empty($generateTokenSanctum)){
+        if (!empty($generateTokenSanctum)) {
             $user->last_login = now()->toDateTimeString();
             $user->save();
         }
@@ -38,17 +38,22 @@ class APIAuthController extends Controller
             'access_token' => $generateTokenSanctum->plainTextToken,
             'expiration' => $generateTokenSanctum->accessToken->expires_at,
             'user' => $user
-        ]);
+        ], 200);
     }
 
     public function logout()
     {
-        Auth::user()
-            ->tokens()
-            ->delete();
+        if (Auth::check()) {
+            Auth::user()->tokens()->delete();
+
+            return response()->json([
+                'error' => false,
+            ], 200);
+        }
 
         return response()->json([
-            'error' => false,
-        ], 200);
+            'error' => true,
+            'message' => 'Usuário não autenticado'
+        ], 401);
     }
 }

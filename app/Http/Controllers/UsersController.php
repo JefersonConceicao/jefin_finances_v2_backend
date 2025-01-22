@@ -30,7 +30,6 @@ class UsersController extends Controller
 
             $user->save();
 
-
             return response()->json([
                 'error' => false,
                 'data' => $user

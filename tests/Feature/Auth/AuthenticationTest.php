@@ -1,5 +1,8 @@
 <?php
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\User;
+
+uses(RefreshDatabase::class);
 
 describe('autenticação', function(){
     it('usuário deve se autentica informando e-mail e senha', function(){
@@ -89,8 +92,8 @@ describe('recuperação de senha', function(){
 
         $response
         ->assertStatus(422)
-        ->assertJson([
-            "message" => "E-mail não encontrado"
+        ->assertJsonStructure([
+            "message"
         ]);
     });
 

@@ -16,6 +16,7 @@ class DashboardController extends Controller
     {
         $quantidadeMesesAnterior = 5;
         $data = $this->despesa->getDespesasPorAnoMes($request->user_id, $quantidadeMesesAnterior);
+
         $response = [
             'dados' => $data,
             'quantidade_meses' => $quantidadeMesesAnterior,
